@@ -1,0 +1,27 @@
+UIWebView
+
+-a UIView subclass designed to display web content, including HTML, CSS and JS
+It can also display email attachments like PDFs and MS Word docs.
+
+Some methods and properties we need for our browser:
+
+-the loadRequest: method tells the web view to begin loading content
+-the stopLoading method tells the web view to stop loading
+-the reload method tells the webv view to reload the current content
+-the loading property tells you if the web view is currently loading
+-the goBack and goForward methods can be used as button actions to move through web history
+
+Requesting web sites: NSURLRequest and NSURL
+
+We need to tell our UIWebView instance which site to load.
+To do this, we'll need to construct an NSURLRequest objce
+
+NSURLRequest objects represent a request to load a URL
+Most common URLs look like http://www.bloc.io, but this object can be used
+to represent other protocols (like FTP) or other schemes (like file:// or news://)
+
+NSString *blocURLString = @"http://bloc.io";
+NSURL *blocURL = [NSURL URLWithString:blocURLString];
+NSURLRequest *blocURLRequest = [NSURLRequest requestWithURL:blocURL];
+
+
