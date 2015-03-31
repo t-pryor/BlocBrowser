@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22AA0AAE1ACA173700816D4B /* NOTES-UI Application in Resources */ = {isa = PBXBuildFile; fileRef = 22AA0AAD1ACA173700816D4B /* NOTES-UI Application */; };
 		22CD0C701AC5E4F60071768B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CD0C6F1AC5E4F60071768B /* main.m */; };
 		22CD0C731AC5E4F60071768B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CD0C721AC5E4F60071768B /* AppDelegate.m */; };
 		22CD0C761AC5E4F60071768B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CD0C751AC5E4F60071768B /* ViewController.m */; };
@@ -27,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		22AA0AAD1ACA173700816D4B /* NOTES-UI Application */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "NOTES-UI Application"; sourceTree = "<group>"; };
 		22CD0C6A1AC5E4F60071768B /* BlocBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlocBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22CD0C6E1AC5E4F60071768B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22CD0C6F1AC5E4F60071768B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 				22CD0C931AC5E6400071768B /* BLCWebBrowserViewController.h */,
 				22CD0C941AC5E6400071768B /* BLCWebBrowserViewController.m */,
 				22D8F7FE1AC80C060062EC24 /* NOTES */,
+				22AA0AAD1ACA173700816D4B /* NOTES-UI Application */,
 				22CD0C741AC5E4F60071768B /* ViewController.h */,
 				22CD0C751AC5E4F60071768B /* ViewController.m */,
 				22CD0C7A1AC5E4F60071768B /* Images.xcassets */,
@@ -202,6 +205,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22D8F7FF1AC80C060062EC24 /* NOTES in Resources */,
+				22AA0AAE1ACA173700816D4B /* NOTES-UI Application in Resources */,
 				22CD0C7B1AC5E4F60071768B /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

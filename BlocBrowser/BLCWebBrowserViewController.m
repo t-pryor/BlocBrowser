@@ -59,19 +59,15 @@
   [self.reloadButton setEnabled:NO];
   
   [self.backButton setTitle:NSLocalizedString(@"Back", @"Back command") forState:UIControlStateNormal];
-  [self.backButton addTarget:self.webview action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
   
   [self.forwardButton setTitle:NSLocalizedString(@"Forward", @"Forward command") forState:UIControlStateNormal];
-  [self.forwardButton addTarget:self.webview action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
   
   [self.stopButton setTitle:NSLocalizedString(@"Stop", @"Stop command") forState:UIControlStateNormal];
-  [self.stopButton addTarget:self.webview action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
   
   [self.reloadButton setTitle:NSLocalizedString(@"Refresh", @"Reload command") forState:UIControlStateNormal];
-  [self.reloadButton addTarget:self.webview action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
   
-  
-  
+  [self addButtonTargets];
+
   for (UIView *viewToAdd in @[self.webview, self.textField, self.backButton,
                               self.forwardButton, self.stopButton, self.reloadButton]) {
   [mainView addSubview:viewToAdd];
@@ -216,7 +212,7 @@
                             stringByEvaluatingJavaScriptFromString:@"document.title"];
   
   if (webpageTitle) {
-    self.title = webpageTitle;
+    self.navigationItem.title = webpageTitle;
   } else {
     self.title = self.webview.request.URL.absoluteString;
   }
@@ -229,8 +225,47 @@
   
   self.backButton.enabled = [self.webview canGoBack];
   self.forwardButton.enabled = [self.webview canGoForward];
-  self.stopButton.enabled = self.frameCount > 0;
-  self.reloadButton.enabled = !self.frameCount == 0;
+  self.stopButton.enabled = (self.frameCount > 0);
+  self.reloadButton.enabled = (self.webview.request.URL && self.frameCount == 0);
 }
+
+
+- (void) resetWebView
+{
+  // remove the old web view from the view hierarchy
+  // Unlinks the view from its superview and its window and removes it from the responder chain.
+  [self.webview removeFromSuperview];
+  
+  // create a new, empty web view and adds it back in
+  UIWebView *newWebView = [[UIWebView alloc] init];
+  newWebView.delegate = self;
+  [self.view addSubview:newWebView];
+  
+  self.webview = newWebView;
+  
+  [self addButtonTargets];
+  
+  self.textField.text = nil;
+  [self updateButtonsAndTitle];
+  
+}
+
+// we need to tell the buttons to switch the web view, or else they will try to communicate
+// with a web view that no longer exsts and cause a crash
+
+-(void) addButtonTargets
+{
+  // the for loop will loop through all the buttons and remove the reference to the old web view
+  // the web view is added as a target to each button, just like in load view
+  for (UIButton *button in @[self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
+    [button removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];
+  }
+  
+  [self.backButton addTarget:self.webview action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+  [self.forwardButton addTarget:self.webview action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
+  [self.stopButton addTarget:self.webview action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
+  [self.reloadButton addTarget:self.webview action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
+}
+
 
 @end

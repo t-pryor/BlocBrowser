@@ -1,0 +1,123 @@
+APP-WIDE CHANGES & INFORMATION
+
+UIApplication:
+represents your current app to the OS, and allows you to:
+-enable or disable proximity sensing (closeness to the user's face)
+-register for push notifications
+-ask iOS for time to do some work in the background when your user leaves the app
+-ask iOS if you can open a file in another app
+-set the badge number on your app's home screen icon
+
+UIApplication has a delegate: app delegate.
+It contains methods that iOS uses to communicate information to your app.
+
+The application delegate method applicationWillResignActive: is called whenever the app goes
+to the background.
+e.g., happens when the user presses the home button or receives a phone call.
+
+COMMON APP DELEGATE METHODS
+
+-application: didFinishLaunchingWithOptions:
+This method called when an app has all the pieces needed to launch.
+If you're making your views in code, you'll need to set your app's keyWindow and rootViewController here.
+  if you use a storyboard, that's done for you
+You can do any basic setup and start the required services here
+You could start monitoring the user's location or connect to a server to download new data
+Need to do it fast. If you don't return YES fast enough iOS will close your app
+launchOptions is an NSDictionary passed into this method.
+It gives you more info about why and how your app was launched.
+e.g., if your app supports push notifications, this dictionary will allow you to determine whether
+the app launched because the user tapped your home screen icon, or whether a notification was swiped
+in Notification Center
+
+-applicationDidReceiveMemoryWarning:
+iOS is aggressive about system resources, including memory.
+When the system is running low, your app will receive a memory warning
+One of the three places you're notified is in this app delegate method.
+In this method, remove from memory anything which can easily be recreated later.
+If a web browser app had multiple tabs, you could write the URLs of the non-viewed tabs to disk,
+ then remove them from memory
+
+-applicationSignificantTimeChange:
+This method gets called any time there is a "significant change in the time".
+
+For example:
+-it's midnight(the day changes)
+-the user's cell phone carrier changed their time
+-the user moves between time zones
+
+This can be helpful if your app displays time-based content.
+For ex, if your app displayed an email labeled "Today" and the day changed, this method
+would allow you to update it to instantly change to say "Yesterday".
+
+APPLICATION STATES
+Your application is always in one of these staes:
+NotRunning: Your app has not been launched yet or has been terminated
+
+Active or UIApplicationStateActive:
+Your app is running in the foreground and users are interacting with it
+
+Inactive:UIApplicationStateInactive:
+You app is running in the foreground, but users aren't interacting with it
+This can ahappen while it's launching , if the user presses the lock button or if the user receives a phone call
+
+Background:UIApplicationStateBackground
+Your app is still running, but iOS is giving you some extra time to finish up any tasks
+ (like saving data to disk, or downloading fresh data from the Internet for the next time the app launches).
+
+The app delegate is called to notifiy you of these changes, in case you want to do something when this happens:
+
+applicationDidBecomeActive:
+applicationWillResignActive:
+applicationDidEnterBackground:
+applicationWillEnterForeground:
+applicationWillTerminate:
+
+For ex, if your app is a game, you should pause the game on behalf of the user in applicationWillResignActive:
+
+
+BNRANCH page 353-355
+APPLICATION STATES AND TRANSITIONS
+Not Running:
+When an application is not runnint, it is in the *not running* state
+It does not execute any code or have any memorty reserved in RAM
+
+Active State:
+An app's interface is on the screen, it is accepting events and its code is handling those events
+
+Inactive State:
+While in the active state, an app can be temporarily suspended by a system event like an
+SMS message, push notification, phone call or alarm.
+An overlay will appear on top of your application to handle this event
+This state known as the inactive state
+In this state, an application is mostly visible (an alert view will appear and obscure part of the interface)
+and is executing code but it is not receiving events.
+Application typically spend very little time in the inactive state.
+You can force an active application into the inactive state by pressing hte Lock button at the top of the device
+The application will stay inactive until the device is unlocked.
+
+Background State:
+When the user presses the Home button or switches to another app in some way, the app enters the background state
+(It spends a brief moment in the inactive state before transitioning to the background).
+In the background an application's interface is not visible or receiving events, but it can still execute code
+By default, an application that enters the background state has about ten seconds before it enteres the *suspended state*.
+Your app should not rely on this ten secs: it should save user data and release any shared resources as quickly as possible.
+
+Suspended State:
+An app in the suspended state cannot execute code, you cannot see its interface and any resources it does not need
+while suspended are destroyed.
+A suspended app is essentially freeze-dried and can be quickly thawed when the user relaunches it.
+
+You can see what apps are in the background or suspended by double-clicking the Home button to get to the multitasking display.
+(Recently run apps that have been terminated may also appear in this display)
+
+An application in the suspended state will remain in that state as long as there is adequate system memory.
+When the OS decides mem is getting low, it terminates suspended apps as needed.
+A suspended app gets no notification it is about to be terminated: it is simply removed from memory.
+(An app may remain in the multitasking display after it has been terminated, but it will have to be relaunched when tapped.)
+
+When an app changrd its state, the app delegate is sent a message.
+
+
+
+
