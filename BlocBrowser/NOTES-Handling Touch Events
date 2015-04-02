@@ -1,0 +1,32 @@
+HANDLING TOUCH EVENTS
+
+UILabel doesn't handle touches by default
+
+HOW TOUCHES GET ROUTED
+iOS passes various events to your app, the most common of which are "touch events" when the user touches the screen.
+Other events include "accelerometer events", like when a user shakes a device, and "remote control events" if the user presses a button on a remote control.
+
+When a user touches a view, iOS checks to see if that view wants to respond to the touch.
+If the view doesn't, iOS keeps goint to each view's superview until it finds a view that does
+want to respond to it.
+RESPONDER CHAIN: the sequence of objects that are passed the event.
+As iOS passes events along the chain, it also transfers the responsibility of responding to the event.
+This design pattern makes event handling cooperative and dynamic.
+
+HOW TO HANDLE TOUCH EVENTS
+In our toolbar, the user will tap one of the UILabels, which won't respond to touch
+The event then gets passed to our toolbar object.
+Since we want to respond to the touch event, we need to indicate this by implementing these 4 methods:
+touchesBegan , Moved, Ended, Cancellled(sliding finger off screen, phone call while touching screen)
+
+NSSet:
+represents  a collection of other objects
+Unlike an array, it is not ordered and can't contain duplicate objects
+Each NSSet(called touches) will contain one UITouch object
+
+UITouch:
+represents one finger currently touching the screen
+
+UIEvent:
+represents a touch event, a motion event or a remote-control event
+

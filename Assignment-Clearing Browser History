@@ -1,0 +1,41 @@
+
+Send a message to your mentor describing how you think these four apps could reasonably behave in response to the application state changing:
+
+A banking app with sensitive financial data, like Mint:
+
+Not Running -> Active
+application: didFinishLoadingWithOptions
+connect to secure server
+could send credential information from the user to validate this device is authorized
+
+
+Active -> Inactive
+applicationWillResignActive:
+We could set a timer here to log the user out in say 2 minutes if he doesn't come back to Mint.
+For instance, if the Lock button is pressed, the Mint app would enter the Inactive state until unlocked.
+Someone could steal the phone and enter into Mint a half hour from now just by pressing the Lock button.
+
+
+Inactive -> Background
+applicationDidEnterBackground:
+This is the last chance an app can be sure to be able to exectute code.
+Once in the Background state, the app can be terminated without notice.
+So here we should officially log the user out of Mint and save any data.
+This would be critical in an app like Mint.
+If not logged out, there could be the possibility of someone stealing your phone, and regaining access to Mint.
+
+
+
+A social media app, like Facebook
+This could follow the same protocol as Mint, as users would consider this data important.
+The security constraints could be loosened a bit however, or some of these could be set by the user, given that protection of this data is probably not regulated as it is with Mint, and users could loosen these constraints at their own risk. Getting to data quickly may be more important to users of Facebook, so users may like to loosen some of these constraints.
+
+A Pong-like game
+Since this is certainly not critical information, perhaps saving game state when moving to the background and properly closing the necessary processes would be the only thing necessary. This could save the amount of points achieved by the user during that session.
+When moving from Not Running to Active, a view controller showing login information could be made the root view controller. This would allow the app to load the point total previously achieved by the user.
+
+
+An app that lets you take pictures and apply filters to them, like Instagram
+The camera would need to be accessed, but this could be accomplished within the root view controller.
+When moving to the background state, the camera resource may need to be properly closed so other applications could access it.
+

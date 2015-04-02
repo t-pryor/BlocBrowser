@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		22AA0AAE1ACA173700816D4B /* NOTES-UI Application in Resources */ = {isa = PBXBuildFile; fileRef = 22AA0AAD1ACA173700816D4B /* NOTES-UI Application */; };
+		22AA0AB01ACAF01100816D4B /* Assignment-Clearing Browser History in Resources */ = {isa = PBXBuildFile; fileRef = 22AA0AAF1ACAF01100816D4B /* Assignment-Clearing Browser History */; };
+		22AA0AB51ACB05AC00816D4B /* BLCAwesomeFloatingToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AA0AB41ACB05AC00816D4B /* BLCAwesomeFloatingToolbar.m */; };
+		22AA0AF71ACC43A100816D4B /* NOTES-Handling Touch Events in Resources */ = {isa = PBXBuildFile; fileRef = 22AA0AF61ACC43A100816D4B /* NOTES-Handling Touch Events */; };
 		22CD0C701AC5E4F60071768B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CD0C6F1AC5E4F60071768B /* main.m */; };
 		22CD0C731AC5E4F60071768B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CD0C721AC5E4F60071768B /* AppDelegate.m */; };
 		22CD0C761AC5E4F60071768B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CD0C751AC5E4F60071768B /* ViewController.m */; };
@@ -29,6 +32,10 @@
 
 /* Begin PBXFileReference section */
 		22AA0AAD1ACA173700816D4B /* NOTES-UI Application */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "NOTES-UI Application"; sourceTree = "<group>"; };
+		22AA0AAF1ACAF01100816D4B /* Assignment-Clearing Browser History */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Assignment-Clearing Browser History"; sourceTree = "<group>"; };
+		22AA0AB31ACB05AC00816D4B /* BLCAwesomeFloatingToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLCAwesomeFloatingToolbar.h; sourceTree = "<group>"; };
+		22AA0AB41ACB05AC00816D4B /* BLCAwesomeFloatingToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLCAwesomeFloatingToolbar.m; sourceTree = "<group>"; };
+		22AA0AF61ACC43A100816D4B /* NOTES-Handling Touch Events */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "NOTES-Handling Touch Events"; sourceTree = "<group>"; };
 		22CD0C6A1AC5E4F60071768B /* BlocBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlocBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22CD0C6E1AC5E4F60071768B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22CD0C6F1AC5E4F60071768B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -66,6 +73,7 @@
 		22CD0C611AC5E4F60071768B = {
 			isa = PBXGroup;
 			children = (
+				22AA0AAF1ACAF01100816D4B /* Assignment-Clearing Browser History */,
 				22CD0C6C1AC5E4F60071768B /* BlocBrowser */,
 				22CD0C861AC5E4F60071768B /* BlocBrowserTests */,
 				22CD0C6B1AC5E4F60071768B /* Products */,
@@ -90,8 +98,11 @@
 				22CD0C941AC5E6400071768B /* BLCWebBrowserViewController.m */,
 				22D8F7FE1AC80C060062EC24 /* NOTES */,
 				22AA0AAD1ACA173700816D4B /* NOTES-UI Application */,
+				22AA0AF61ACC43A100816D4B /* NOTES-Handling Touch Events */,
 				22CD0C741AC5E4F60071768B /* ViewController.h */,
 				22CD0C751AC5E4F60071768B /* ViewController.m */,
+				22AA0AB31ACB05AC00816D4B /* BLCAwesomeFloatingToolbar.h */,
+				22AA0AB41ACB05AC00816D4B /* BLCAwesomeFloatingToolbar.m */,
 				22CD0C7A1AC5E4F60071768B /* Images.xcassets */,
 				22CD0C6D1AC5E4F60071768B /* Supporting Files */,
 			);
@@ -204,7 +215,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22AA0AB01ACAF01100816D4B /* Assignment-Clearing Browser History in Resources */,
 				22D8F7FF1AC80C060062EC24 /* NOTES in Resources */,
+				22AA0AF71ACC43A100816D4B /* NOTES-Handling Touch Events in Resources */,
 				22AA0AAE1ACA173700816D4B /* NOTES-UI Application in Resources */,
 				22CD0C7B1AC5E4F60071768B /* Images.xcassets in Resources */,
 			);
@@ -224,6 +237,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22AA0AB51ACB05AC00816D4B /* BLCAwesomeFloatingToolbar.m in Sources */,
 				22CD0C761AC5E4F60071768B /* ViewController.m in Sources */,
 				22CD0C731AC5E4F60071768B /* AppDelegate.m in Sources */,
 				22CD0C951AC5E6400071768B /* BLCWebBrowserViewController.m in Sources */,

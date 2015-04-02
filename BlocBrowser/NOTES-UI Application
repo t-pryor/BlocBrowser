@@ -118,6 +118,9 @@ A suspended app gets no notification it is about to be terminated: it is simply 
 
 When an app changrd its state, the app delegate is sent a message.
 
+Transitioning to the background state is a good place to save any outstanding changes and the state of the application, because it is the lat time your app can execute code before it enters the suspended state.
+Once in the suspended state, an application can be terminated at the whim of the OS.
+
 
 
 
