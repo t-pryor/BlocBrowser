@@ -33,6 +33,15 @@
 // one optional delegate method is declared.
 // If the delegate implements it, it will be called when a user taps a button
 - (void) floatingToolbar:(BLCAwesomeFloatingToolbar *)toolbar didSelectButtonWithTitle:(NSString *)title;
+// As a subview, the toolbar shouldn't be trusted to vove itself around its superview-bad design practice
+// Changes made by objects should only affect themselves and the objects they own
+// if the toolbar moved itself around, it might collide with objects it doesn't know about
+// so add a new delegate method to indicate tha the toolbar wishes to be moved around and the
+// direction it wishes to be moved in
+// Its delegate (the VC) can decide whether to actually move the toolbar or not
+- (void) floatingToolbar:(BLCAwesomeFloatingToolbar *)toolbar didTryToPanWithOffset:(CGPoint)offset;
+
+- (void) pinchFloatingToolbar:(BLCAwesomeFloatingToolbar *) toolbar;
 
 @end
 

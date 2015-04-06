@@ -26,14 +26,23 @@
 @property (nonatomic, strong) NSArray *colors;
 @property (nonatomic, strong) NSArray *labels;
 @property (nonatomic, weak) UILabel *currentLabel;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
+
+@property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
+@property (nonatomic, unsafe_unretained) CGFloat currentScale;
+
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @end
-
 
 
 #import "BLCAwesomeFloatingToolbar.h"
 
 @implementation BLCAwesomeFloatingToolbar
+
+
+int count = 0;
 
 - (instancetype) initWithFourTitles:(NSArray *)titles
 {
@@ -42,7 +51,7 @@
   if (self) {
     self.currentTitles = titles;
     self.colors = @[[UIColor colorWithRed:199/255.0 green:158/255.0 blue:203/255.0 alpha:1],
-                    [UIColor colorWithRed:255/255.0 green:105/255.0 blue:97/255.0 alpha:1],
+                    [UIColor colorWithRed:240/255.0 green:105/255.0 blue:97/255.0 alpha:1],
                     [UIColor colorWithRed:222/255.0 green:165/255.0 blue:164/255.0 alpha:1],
                     [UIColor colorWithRed:255/255.0 green:179/255.0 blue:71/255.0 alpha:1]];
   
@@ -76,6 +85,33 @@
     for (UILabel *thisLabel in self.labels) {
       [self addSubview:thisLabel];
     }
+    
+    self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
+    [self addGestureRecognizer:self.tapGesture];
+    
+    // As a subview, BLCAFT shouldn't be trusted to move around in its superview
+    // ->bad design practice
+    // Changes made by objects should only affect themselves and the objects they own
+    // If the toolbar moved itself around, it might collide with other objects it doesn't know about
+    self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panFired:)];
+    [self addGestureRecognizer:self.panGesture];
+
+    self.userInteractionEnabled = YES;
+    self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinches:)];
+    [self addGestureRecognizer:self.pinchGestureRecognizer];
+    
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc]
+                                       initWithTarget:self
+                                       action:@selector(handleLongPressGestures:)];
+    
+    
+    self.longPressGestureRecognizer.numberOfTouchesRequired = 1;
+    
+    self.longPressGestureRecognizer.allowableMovement = 20;
+    
+    self.longPressGestureRecognizer.minimumPressDuration = 1.0;
+    
+    [self addGestureRecognizer:self.longPressGestureRecognizer];
   }
   
   return self;
@@ -114,9 +150,6 @@
   }
 }
 
-
-
-
 #pragma mark - Touch Handling
 
 // get the label for the button currently being touched
@@ -139,71 +172,105 @@
   
 }
 
-// when a touch begins, dim the label to make it look highlighted
-// also keep track of which label was most recently touched:
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-  
-  UILabel *label = [self labelFromTouches:touches withEvent:event];
-  
-  self.currentLabel = label;
-  self.currentLabel.alpha = 0.5;
-}
-
-// when a touch moves, we check if the user is still touching the label
-// if the user drags off the label, we'll reset the alpha
-// If they drag back on, we'll dim it again
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+- (void) tapFired:(UITapGestureRecognizer *)recognizer
 {
-  UILabel *label = [self labelFromTouches:touches withEvent:event];
-  
-  if (self.currentLabel != label) {
-    // The label being touched is no longer the initial label
-    self.currentLabel.alpha = 1;
-  } else {
-    // The label being touched is the initial label
-    self.currentLabel.alpha = 0.5;
-  }
-}
-
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-  UILabel *label = [self labelFromTouches:touches withEvent:event];
-  
-  if (self.currentLabel == label) {
-    NSLog(@"Label tapped: %@", self.currentLabel.text);
+  // check for the proper state
+  // a gesture recognizezer has several states it can be in and UIGestureRecognizerStateRecognized
+  // is the state it which the type of gesture it recognizes has been detected
+  if (recognizer.state == UIGestureRecognizerStateRecognized) {
+    // this gives us an x-y coordinate where the gesture occured with respect to our bounds
+    // (a tap detected in the top-left corner of the toolbar will register as (0,0)
+    CGPoint location = [recognizer locationInView:self];
+    // invoke hitTest:withEvent: to discover which view received the tap at that location
+    UIView *tappedView = [self hitTest:location withEvent:nil];
     
-    //REQUIRED for optional protocol methods: check if the delegate has implemented the method
-    // app will crash if you try to call a method without checking first
-    // if no delegate has been set, self.delegate is nil, nothing will happen
-    // ObjC, no one can hear your method invocations on a nil object
-    // Other langs: similar behavior could cause a crash
-    
-    //$Ask Steve-slide 2
-    if ([self.delegate respondsToSelector:@selector(floatingToolbar:didSelectButtonWithTitle:)]) {
-      [self.delegate floatingToolbar:self didSelectButtonWithTitle:self.currentLabel.text];
+    // check if the view that was tapped was one of our toolbar labels
+    // if so, verify our delegate for compatibility before performing appropriate method call
+    if ([self.labels containsObject:tappedView]) {
+      if ([self.delegate respondsToSelector:@selector(floatingToolbar:didSelectButtonWithTitle:)]) {
+        [self.delegate floatingToolbar:self didSelectButtonWithTitle:((UILabel *)tappedView).text];
+      }
     }
   }
-  
-  self.currentLabel.alpha = 1;
-  self.currentLabel = nil;
 }
 
--(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *) event
+// we no longer care where the gesture occurred
+// what's important now is which direction it travelled in
+// A pan gesture recognizer's translation is how far the user's finger has moved in each direction
+//  since the touch event began
+// This method is called often during a pan gesture because a "full" pan as we perceive it is
+// actually a linear collection of small pans travelling a few pixels at a time
+- (void) panFired:(UIPanGestureRecognizer *)recognizer
 {
-  self.currentLabel.alpha = 1;
-  self.currentLabel = nil;
+//  if (recognizer.state == UIGestureRecognizerStateChanged) {
+//    
+//    CGPoint translation = [recognizer translationInView:self];
+//    
+//    NSLog(@"New translation: %@", NSStringFromCGPoint(translation));
+//    
+//    if ([self.delegate respondsToSelector:@selector(floatingToolbar:didTryToPanWithOffset:)]) {
+//      [self.delegate floatingToolbar:self didTryToPanWithOffset:translation];
+//    }
+//    // reset this translation to zero such that we are able to get the difference of each mini-pan
+//    // every time the method is called
+//    [recognizer setTranslation:CGPointZero inView:self];
+//  }
+
+// BOOK
+  if (recognizer.state != UIGestureRecognizerStateEnded &&
+      recognizer.state != UIGestureRecognizerStateFailed) {
+    CGPoint location = [recognizer
+                        locationInView:recognizer.view.superview];
+    recognizer.view.center = location;
+    
+  }
+
+}
+
+- (void) handlePinches:(UIPinchGestureRecognizer *)paramSender {
+  NSLog(@"IN HANDLE PINCHES");
+  if (paramSender.state == UIGestureRecognizerStateEnded) {
+    self.currentScale = paramSender.scale;
+  } else if (paramSender.state == UIGestureRecognizerStateBegan &&
+             self.currentScale != 0.0f) {
+    paramSender.scale = self.currentScale;
+  }
+  
+  if (paramSender.scale != NAN &&
+      paramSender.scale != 0.0) {
+    paramSender.view.transform =
+    CGAffineTransformMakeScale(paramSender.scale, paramSender.scale);
+  }
+}
+
+- (void) handleLongPressGestures: (UILongPressGestureRecognizer *)paramSender
+{
+  // $ Ask Steve: why every long press has goes through two times?
+  NSLog(@"COUNT   %i", count);
+  
+  NSLog(@"*********    handleLongPress   ************");
+  
+  UIColor *firstColor = [[UIColor alloc] init];
+  firstColor = [self.labels[0] backgroundColor];
+                                    
+  
+  for (int i = 0; i < self.labels.count; i++) {
+    if (i == self.labels.count - 1) {
+      [self.labels[i] setBackgroundColor:firstColor];
+    } else {
+      [self.labels[i] setBackgroundColor:[self.labels[i + 1] backgroundColor]];
+    }
+  }
+  count++;
+
+  
+  
+  
 }
 
 #pragma mark - Button Enabling
 
-// try to find the index of the button using title
-// if we find an index, use it to get the corresponding UILabel
-// set the userInteractionEnabled and alpha properties depending on the value for enabled that was passed in
-
-- (void) setEnabled:(BOOL)enabled forButtonWithTitle:(NSString *)title
-{
+- (void) setEnabled:(BOOL)enabled forButtonWithTitle:(NSString *)title {
   NSUInteger index = [self.currentTitles indexOfObject:title];
   
   if (index != NSNotFound) {
@@ -212,7 +279,6 @@
     label.alpha = enabled ? 1.0 : 0.25;
   }
 }
-
 
 
 @end

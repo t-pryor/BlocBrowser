@@ -24,6 +24,9 @@
 @property (nonatomic, strong) BLCAwesomeFloatingToolbar *awesomeToolbar;
 @property (nonatomic, assign) NSUInteger frameCount;
 
+@property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
+@property (nonatomic, unsafe_unretained) CGFloat currentScale;
+
 @end
 
 @implementation BLCWebBrowserViewController
@@ -60,6 +63,8 @@
   
   NSLog(@"NAV tVC: %@", self.navigationController.topViewController);
   NSLog(@"NAV rVC: %@", self.navigationController.viewControllers.firstObject);
+  
+  
 }
 
 - (void)viewDidLoad
@@ -73,8 +78,12 @@
                             UIActivityIndicatorViewStyleGray];
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                             initWithCustomView:self.activityIndicator];
-
-
+  
+//  self.awesomeToolbar.userInteractionEnabled = YES;
+//  self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc]
+//                                 initWithTarget:self
+//                                 action:@selector(handlePinches:)];
+//  [self.awesomeToolbar addGestureRecognizer:self.pinchGestureRecognizer];
 }
 
 // we do this here because before this point the main view is not guaranteeed
@@ -259,5 +268,41 @@
   }
 }
 
+- (void) floatingToolbar:(BLCAwesomeFloatingToolbar *)toolbar didTryToPanWithOffset:(CGPoint)offset {
+  // start by getting the top-left corner of where the currently located
+  CGPoint startingPoint = toolbar.frame.origin;
+  // newPoint is where the future top-left corner is stored by adding the difference in x
+  // and the difference in y to the original top-left coordinate
+  CGPoint newPoint = CGPointMake(startingPoint.x + offset.x, startingPoint.y + offset.y);
+  // create a new CGRect which represents the toolbar's potential new frame
+  // potential because we want to make sure we don't push the toolbar off the screen
+  CGRect potentialNewFrame = CGRectMake(newPoint.x, newPoint.y, CGRectGetWidth(toolbar.frame), CGRectGetHeight(toolbar.frame));
+  // returns YES if the rect2's bounds are contained entirely by rect1, or NO otherwise.
+  if (CGRectContainsRect(self.view.bounds, potentialNewFrame)) {
+    toolbar.frame = potentialNewFrame;
+  }
+}
+
+//- (void) handlePinches:(UIPinchGestureRecognizer *)paramSender {
+//  if (paramSender.state == UIGestureRecognizerStateEnded) {
+//    self.currentScale = paramSender.scale;
+//  } else if (paramSender.state == UIGestureRecognizerStateBegan &&
+//             self.currentScale != 0.0f) {
+//    paramSender.scale = self.currentScale;
+//  }
+//  
+//  if (paramSender.scale != NAN &&
+//      paramSender.scale != 0.0) {
+//    paramSender.view.transform =
+//    CGAffineTransformMakeScale(paramSender.scale, paramSender.scale);
+//  }
+//}
+
+//-(void) pinchFloatingToolbar:(BLCAwesomeFloatingToolbar *)toolbar
+//{
+//  
+//  
+//  
+//}
 
 @end
