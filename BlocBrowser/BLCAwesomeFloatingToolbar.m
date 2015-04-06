@@ -55,10 +55,12 @@ int count = 0;
                     [UIColor colorWithRed:222/255.0 green:165/255.0 blue:164/255.0 alpha:1],
                     [UIColor colorWithRed:255/255.0 green:179/255.0 blue:71/255.0 alpha:1]];
   
+    
     NSMutableArray *labelsArray = [[NSMutableArray alloc] init];
     
     //Make the 4 labels
     for (NSString *currentTitle in self.currentTitles) {
+      
       UILabel *label = [[UILabel alloc] init];
       // property that indicates whether a UIView receives touch events
       label.userInteractionEnabled = NO;
@@ -78,6 +80,7 @@ int count = 0;
       label.textColor = [UIColor whiteColor];
       
       [labelsArray addObject:label];
+    
     }
     
     self.labels = labelsArray;
@@ -109,7 +112,7 @@ int count = 0;
     
     self.longPressGestureRecognizer.allowableMovement = 20;
     
-    self.longPressGestureRecognizer.minimumPressDuration = 1.0;
+    self.longPressGestureRecognizer.minimumPressDuration = 0.5;
     
     [self addGestureRecognizer:self.longPressGestureRecognizer];
   }
@@ -163,7 +166,9 @@ int count = 0;
   // without the cast, compiler would warn us: Incompatible pointer types returning 'UIView'
   // from a function with result type 'UILabel'
   
-  //$ Ask Steve
+  // would work in iOS7/XCode5
+  
+  // Ask Steve
   if ([subview isMemberOfClass:[UILabel class]]) {
     return (UILabel *)subview;
   } else {
@@ -245,22 +250,32 @@ int count = 0;
 
 - (void) handleLongPressGestures: (UILongPressGestureRecognizer *)paramSender
 {
-  // $ Ask Steve: why every long press has goes through two times?
+  //SO: why does this method get recognized twice?
+  //http://stackoverflow.com/questions/3319591/uilongpressgesturerecognizer-gets-called-twice-when-pressing-down
+
+  NSLog(@"*******************handleLongPress******************");
   NSLog(@"COUNT   %i", count);
   
-  NSLog(@"*********    handleLongPress   ************");
+  if (paramSender.state == UIGestureRecognizerStateBegan) {
+    NSLog(@"UIGestureRecognizerStateBegan");
+
+    UIColor *firstColor = [[UIColor alloc] init];
+    firstColor = [self.labels[0] backgroundColor];
   
-  UIColor *firstColor = [[UIColor alloc] init];
-  firstColor = [self.labels[0] backgroundColor];
-                                    
-  
-  for (int i = 0; i < self.labels.count; i++) {
-    if (i == self.labels.count - 1) {
-      [self.labels[i] setBackgroundColor:firstColor];
-    } else {
-      [self.labels[i] setBackgroundColor:[self.labels[i + 1] backgroundColor]];
+    for (int i = 0; i < self.labels.count; i++) {
+      if (i == self.labels.count - 1) {
+        [self.labels[i] setBackgroundColor:firstColor];
+      } else {
+        [self.labels[i] setBackgroundColor:[self.labels[i + 1] backgroundColor]];
+      }
     }
   }
+  
+  if (paramSender.state == UIGestureRecognizerStateEnded) {
+    NSLog(@"UIGestureRecognizerStateEnded.");
+  }
+  
+  
   count++;
 
   
